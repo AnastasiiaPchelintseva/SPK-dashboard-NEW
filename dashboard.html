@@ -67,7 +67,7 @@ tr.sel td{background:color-mix(in srgb,var(--ac) 10%,transparent);font-weight:70
 .szt tr.a td.dt{background:color-mix(in srgb,var(--pl,#3b82f6) 14%,transparent);min-height:26px}.szt tr.b td{font-weight:600}.szt td.big{font-size:15px}
 .chp{display:inline-block;padding:1px 7px;margin:1px 2px;border-radius:10px;font-size:12px;background:var(--sf);border:1px solid var(--ln);color:var(--tx)}.chp.cur{background:var(--ac);color:var(--bg);border-color:var(--ac);font-weight:700}.chp.r{background:transparent}
 .szt .mu{color:var(--mt)}.pb{height:6px;background:var(--ln);border-radius:3px;overflow:hidden;margin-bottom:3px;min-width:70px}.pb i{display:block;height:100%}.pb i.ok{background:var(--ok)}.pb i.bad{background:var(--bad)}
-.szt b.ok{color:var(--ok)}.szt b.bad{color:var(--bad)}#doT tr.dwb:hover td{background:color-mix(in srgb,var(--ac) 10%,transparent)}#doT tr.dwd[hidden]{display:none}#doT .dws{width:100%;border-collapse:collapse;font-size:13px;margin:4px 0}.szt tr.tt td{background:var(--sf);font-weight:600}
+.szt b.ok{color:var(--ok)}.szt b.bad{color:var(--bad)}.dl .zg{--zc:color-mix(in srgb,#26846a 22%,var(--sf));background:var(--zc);box-shadow:7px 0 0 var(--zc),-7px 0 0 var(--zc)}.dl .zg:nth-child(3n+1){box-shadow:7px 0 0 var(--zc)}.dl .zg:nth-child(3n){box-shadow:-7px 0 0 var(--zc)}#doT tr.dwb{--bc:#1f5fa8}#doT tr.dwb td{background:color-mix(in srgb,var(--bc) 14%,transparent);font-weight:600}#doT tr.dwb td:first-child{border-left:6px solid var(--bc);color:var(--bc)}#doT tr.dwb:hover td{background:color-mix(in srgb,var(--ac) 10%,transparent)}#doT tr.dwd[hidden]{display:none}#doT .dws{width:100%;border-collapse:collapse;font-size:13px;margin:4px 0}.szt tr.tt td{background:var(--sf);font-weight:600}
 .ddh{display:flex;flex-direction:column;gap:12px;margin-top:6px}.ddh .hd{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;border-bottom:2px solid var(--ac);padding-bottom:8px}.ddh .sub{color:var(--mt);font-size:13px}
 .strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}.tile{background:var(--sf);border:1px solid var(--ln);border-radius:6px;padding:12px 14px;display:flex;flex-direction:column;gap:3px}.tile small{color:var(--mt);font-size:12px}.tile b{font-size:24px;font-weight:600}.tile span{font-size:12px;color:var(--mt)}.tile span b{font-size:12px}
 .cols{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:12px;align-items:start}@media(max-width:860px){.cols{grid-template-columns:1fr}}
@@ -144,7 +144,7 @@ body.pdfx header,body.pdfx .exp,body.pdfx .per,body.pdfx .seg,body.pdfx .nzc,bod
 <section class="p std" style="margin-top:16px">
   <div class="nzh"><div><h2 id="nzH1">НЗП: склад некомплектной продукции, м²</h2><p class="sub" id="nzS"></p></div>
   <label>Дата среза <select id="nzD"></select></label></div>
-  <div class="nzc"><div class="seg" id="nzM" role="group" aria-label="Раскраска столбцов"></div><div class="seg" id="nzTy" role="group" aria-label="Тип изделия"></div></div>
+  <div class="nzc"><div class="seg" id="nzM" role="group" aria-label="Раскраска столбцов"></div><div class="seg" id="nzTy" role="group" aria-label="Тип изделия"></div><label class="nzq">Объект <input type="search" id="nzQ" placeholder="поиск по объекту" autocomplete="off"></label></div>
   <div class="x"><svg id="nzC" viewBox="0 0 640 250" role="img" aria-label="НЗП по дням"></svg></div>
   <div class="lg" id="nzL"></div>
   <h2 style="margin-top:18px">По типам изделий на выбранную дату</h2>
@@ -156,6 +156,8 @@ body.pdfx header,body.pdfx .exp,body.pdfx .per,body.pdfx .seg,body.pdfx .nzc,bod
   <div class="x"><table id="nzO"></table></div>
   <h2 id="nzH2" style="margin-top:18px">НЗП по объектам на выбранную дату</h2>
   <div class="x"><table id="nzB"></table></div>
+  <h2 id="nzKH" style="margin-top:18px" hidden>Конструкции выбранного объекта на выбранную дату</h2>
+  <div class="x" id="nzKW" hidden><table id="nzK"></table></div>
   <details id="nzU" hidden><summary>Номенклатура без типа («Прочее»)</summary><p class="sub" style="margin:10px 0">Тип не определился по названию. Впишите в «Ввод данных → Типы номенклатуры вручную» строку «часть названия; тип».</p><div class="x"><table id="nzW"></table></div></details>
   <details style="margin-top:14px"><summary>Таблица по дням</summary><div class="x"><table id="nzT"></table></div></details>
 </section>
@@ -283,6 +285,7 @@ function brig(C){C.BA=null;
   $("sch").innerHTML=hd+"</tr>"+d1+"</tr>"+d2+"</tr>";
   $("slg").innerHTML=[0,1,2].map(function(i){return '<span><i class="b'+(i+1)+'"></i>'+nmx(i)+'</span>'}).join("");
 }
+var nzQ="",nzQv="";function nzHit(r){return !nzQ||(r.ob||"").toLowerCase().indexOf(nzQ)>=0}
 var AGE_N=["до 3 дней","4–7 дней","8–14 дней","15–30 дней","более 30 дней"],TYPES_AL=["Каркасы ТАЛ","Каркасы ХАЛ","Двери","Окна","Прочее"],TYPES_PV=["Завод","СМУ"],TYPES=TYPES_AL,NZ_KEEP=60,nzMode="age",nzTyp=null;
 function autoType(n){var l=String(n).toLowerCase();if(l.indexOf("каркас")>-1)return /эт\./.test(l)?TYPES[1]:TYPES[0];if(l.indexOf("двер")>-1)return TYPES[2];if(l.indexOf("окн")>-1)return TYPES[3];return TYPES[4]}
 function normType(s){var l=String(s).toLowerCase();if(l.indexOf("хал")>-1)return TYPES[1];if(l.indexOf("тал")>-1)return TYPES[0];if(l.indexOf("двер")>-1)return TYPES[2];if(l.indexOf("окн")>-1)return TYPES[3];return TYPES[4]}
@@ -294,7 +297,7 @@ function parseNzp(t,tm,nm,om){var o={},R=typeRules(tm),M=nomMap(nm),OM=nomMap(om
 function ageSum(b,j){var x=0;for(;j<5;j++)x+=b[j];return x}
 function nzSnap(z,ft){var b=[0,0,0,0,0],bq=[0,0,0,0,0],bt={},tot=0,q=0,I=0,O=0,IQ=0,OQ=0,ty={},io={};
   TYPES.forEach(function(t){ty[t]={m:0,q:0,o7:0,o15:0,o30:0};bt[t]=0});
-  z.rows.forEach(function(r){var ok=!ft||r.t===ft;if(ok){I+=r.im;O+=r.om;IQ+=r.i;OQ+=r.o;var x=io[r.t]||(io[r.t]={im:0,iq:0,om:0,oq:0});x.im+=r.im;x.iq+=r.i;x.om+=r.om;x.oq+=r.o}
+  z.rows.forEach(function(r){if(!nzHit(r))return;var ok=!ft||r.t===ft;if(ok){I+=r.im;O+=r.om;IQ+=r.i;OQ+=r.o;var x=io[r.t]||(io[r.t]={im:0,iq:0,om:0,oq:0});x.im+=r.im;x.iq+=r.i;x.om+=r.om;x.oq+=r.o}
     if(!(r.e>0))return;var age=r.ld?Math.max(0,Math.round((z.d-r.ld)/864e5)):0,j=age<=3?0:age<=7?1:age<=14?2:age<=30?3:4,y=ty[r.t];r.age=age;
     y.m+=r.em;y.q+=r.e;if(j>=2)y.o7+=r.em;if(j>=3)y.o15+=r.em;if(j>=4)y.o30+=r.em;
     if(ok){b[j]+=r.em;bq[j]+=r.e;bt[r.t]+=r.em;tot+=r.em;q+=r.e}});
@@ -306,7 +309,7 @@ function nzp(C){
   TYPES=tab=="pvh"?TYPES_PV:TYPES_AL;if(nzTyp&&TYPES.indexOf(nzTyp)<0)nzTyp=null;
   var D=S[tab],Z=parseNzp(D.nzp,D.tmap,D.nom,D.obj),all=Object.keys(Z).map(Number).sort(function(a,b){return a-b}),
     inP=all.filter(function(k){return k>=key(C.from)&&(pk!="c"||k<=key(C.to))}),
-    none=function(m){$("nzS").textContent=m;["nzC","nzF","nzT","nzO","nzB","nzD","nzY","nzW","nzM","nzTy","nzL"].forEach(function(i){$(i).innerHTML=""});$("nzU").hidden=true;return null};
+    none=function(m){$("nzS").textContent=m;["nzC","nzF","nzT","nzO","nzB","nzD","nzY","nzW","nzM","nzTy","nzL","nzK"].forEach(function(i){$(i).innerHTML=""});$("nzU").hidden=true;return null};
   if(!all.length)return none("Нет данных НЗП по цеху «"+NAMES[tab]+"». Загрузите ведомости по складу в блоке «Ввод данных».");
   if(!inP.length)return none("В выбранном периоде срезов НЗП нет. Срезы есть с "+dl(Z[all[0]].d)+" по "+dl(Z[all[all.length-1]].d)+".");
   if(nzDay===null||inP.indexOf(nzDay)<0)nzDay=inP[inP.length-1];
@@ -318,7 +321,7 @@ function nzp(C){
   $("nzM").innerHTML="Цвет столбцов:"+[["age","по возрасту"],["type","по типу"]].map(function(m){return '<button data-nm="'+m[0]+'" aria-pressed="'+(m[0]==nzMode)+'">'+m[1]+'</button>'}).join("");
   $("nzTy").innerHTML="Тип:"+[["","Все типы"]].concat(tl.map(function(t){return [t,t]})).map(function(m){return '<button data-nt="'+m[0]+'" aria-pressed="'+((ft||"")==m[0])+'">'+m[1]+'</button>'}).join("");
   $("nzL").innerHTML=nzMode=="age"?AGE_N.map(function(t,j){return '<span><i class="r'+(j+1)+'"></i>'+t+'</span>'}).join(""):tl.filter(function(t){return !ft||t==ft}).map(function(t){return '<span><i class="t'+(TYPES.indexOf(t)+1)+'"></i>'+t+'</span>'}).join("");
-  $("nzS").textContent="На "+dl(Z[nzDay].d)+" на складе "+fmt(s.tot)+" м² ("+fmtn(s.q)+" шт.)"+(ft?", тип «"+ft+"»":"")+". За сутки: "+(prev===null?"нет предыдущего среза":(function(){var p=St[prev],dm=s.tot-p.tot,dq=s.q-p.q,sg=function(v,f){return (v>0.0005?"+":v<-0.0005?"−":"")+f(Math.abs(v))};return (s.tot>=p.tot?"прирост ":"расход ")+sg(dm,fmt)+" м² ("+sg(dq,fmtn)+" шт.) к срезу "+dl(Z[prev].d)})())+"; приход "+fmt(s.I)+" м² ("+fmtn(s.IQ)+" шт.), расход "+fmt(s.O)+" м² ("+fmtn(s.OQ)+" шт.)"+". Возраст считается от даты в серии партии до даты среза. Нажмите на столбец, чтобы выбрать дату.";
+  $("nzS").textContent="На "+dl(Z[nzDay].d)+" на складе "+fmt(s.tot)+" м² ("+fmtn(s.q)+" шт.)"+(ft?", тип «"+ft+"»":"")+(nzQ?", объект содержит «"+nzQv+"»":"")+". За сутки: "+(prev===null?"нет предыдущего среза":(function(){var p=St[prev],dm=s.tot-p.tot,dq=s.q-p.q,sg=function(v,f){return (v>0.0005?"+":v<-0.0005?"−":"")+f(Math.abs(v))};return (s.tot>=p.tot?"прирост ":"расход ")+sg(dm,fmt)+" м² ("+sg(dq,fmtn)+" шт.) к срезу "+dl(Z[prev].d)})())+"; приход "+fmt(s.I)+" м² ("+fmtn(s.IQ)+" шт.), расход "+fmt(s.O)+" м² ("+fmtn(s.OQ)+" шт.)"+". Возраст считается от даты в серии партии до даты среза. Нажмите на столбец, чтобы выбрать дату.";
   var d0=Z[inP[0]].d,n=Math.round((Z[inP[inP.length-1]].d-d0)/864e5)+1,days=[],i;
   for(i=0;i<n;i++)days.push(shift(d0,i));
   var W=640,L=48,R=10,pw=W-L-R,X=function(i){return L+pw*(i+.5)/n},bw=Math.min(48,pw/n*.64),stp=1,v,sv="",lab=n<=8?fmt:fmtn;
@@ -347,17 +350,22 @@ function nzp(C){
     if(n<=12)sv+='<text x="'+X(i)+'" y="'+(mid-hu-4)+'" text-anchor="middle">'+lab(a.I)+'</text><text x="'+X(i)+'" y="'+(mid+hd+12)+'" text-anchor="middle">'+lab(a.O)+'</text>'});
   $("nzF").innerHTML=sv;
   // oldest lots
-  var og={};Z[nzDay].rows.forEach(function(r){if(!(r.e>0)||(ft&&r.t!==ft))return;var kk=r.lot+"\u0001"+r.n+"\u0001"+r.t+"\u0001"+r.ob,x=og[kk]||(og[kk]={lot:r.lot,n:r.n,t:r.t,ob:r.ob,age:r.age,e:0,em:0});x.e+=r.e;x.em+=r.em});
+  var og={};Z[nzDay].rows.forEach(function(r){if(!nzHit(r)||!(r.e>0)||(ft&&r.t!==ft))return;var kk=r.lot+"\u0001"+r.n+"\u0001"+r.t+"\u0001"+r.ob,x=og[kk]||(og[kk]={lot:r.lot,n:r.n,t:r.t,ob:r.ob,age:r.age,e:0,em:0});x.e+=r.e;x.em+=r.em});
   var rows=Object.keys(og).map(function(k){return og[k]}).sort(function(a,b){return b.age-a.age||b.em-a.em}).slice(0,10);
   $("nzO").innerHTML='<thead><tr><th style="text-align:left">Серия партии</th><th style="text-align:left">Номенклатура</th><th style="text-align:left">Объект</th><th style="text-align:left">Тип</th><th>Возраст, дн.</th><th>Шт.</th><th>м²</th></tr></thead><tbody>'+rows.map(function(r){return '<tr><td style="text-align:left">'+r.lot.replace(/_/g," · ")+'</td><td style="text-align:left;white-space:normal;min-width:240px">'+r.n+'</td><td style="text-align:left;white-space:normal;min-width:200px">'+(r.ob||"—")+'</td><td style="text-align:left">'+r.t+'</td><td'+(r.age>=15?' class="bad"':'')+'>'+r.age+'</td><td>'+fmtn(r.e)+'</td><td>'+fmt(r.em)+'</td></tr>'}).join("")+'</tbody>';
   // by object
-  var ob={};Z[nzDay].rows.forEach(function(r){if(!(r.e>0)||(ft&&r.t!==ft))return;var k=r.ob||"Без объекта",x=ob[k]||(ob[k]={q:0,m:0,t:{},o7:0,o15:0,o30:0});x.q+=r.e;x.m+=r.em;x.t[r.t]=(x.t[r.t]||0)+r.em;if(r.age>=8)x.o7+=r.em;if(r.age>=15)x.o15+=r.em;if(r.age>30)x.o30+=r.em});
+  var ob={};Z[nzDay].rows.forEach(function(r){if(!nzHit(r)||!(r.e>0)||(ft&&r.t!==ft))return;var k=r.ob||"Без объекта",x=ob[k]||(ob[k]={q:0,m:0,t:{},o7:0,o15:0,o30:0});x.q+=r.e;x.m+=r.em;x.t[r.t]=(x.t[r.t]||0)+r.em;if(r.age>=8)x.o7+=r.em;if(r.age>=15)x.o15+=r.em;if(r.age>30)x.o30+=r.em});
   var ok=Object.keys(ob).sort(function(a,b){return ob[b].m-ob[a].m}),ot=TYPES.filter(function(t){return ok.some(function(k){return ob[k].t[t]})}),OT={q:0,m:0,t:{},o7:0,o15:0,o30:0};
   ok.forEach(function(k){var x=ob[k];OT.q+=x.q;OT.m+=x.m;OT.o7+=x.o7;OT.o15+=x.o15;OT.o30+=x.o30;ot.forEach(function(t){OT.t[t]=(OT.t[t]||0)+(x.t[t]||0)})});
   var orow=function(nm,x,b){var tdl=function(v){return "<td>"+(b?"<b>"+v+"</b>":v)+"</td>"};return "<tr"+(b?' style="border-top:2px solid var(--ln)"':"")+'><td style="text-align:left;white-space:normal;min-width:240px">'+(b?"<b>"+nm+"</b>":nm)+"</td>"+tdl(fmtn(x.q))+tdl(fmt(x.m))+tdl(pct(x.m,OT.m))+ot.map(function(t){return tdl(x.t[t]?fmt(x.t[t]):"—")}).join("")+tdl(fmt(x.o7))+tdl(fmt(x.o15))+tdl(fmt(x.o30))+"</tr>"};
   $("nzB").innerHTML='<thead><tr><th style="text-align:left">Объект</th><th>Шт.</th><th>НЗП, м²</th><th>Доля</th>'+ot.map(function(t){return "<th>"+t+", м²</th>"}).join("")+'<th>Старше 7 дн., м²</th><th>Старше 15 дн., м²</th><th>Старше 30 дн., м²</th></tr></thead><tbody>'+ok.map(function(k){return orow(k,ob[k],false)}).join("")+orow("Итого",OT,true)+"</tbody>";
+  // конструкции выбранного объекта
+  var kk0=[];if(nzQ)Z[nzDay].rows.forEach(function(r){if(nzHit(r)&&r.e>0&&(!ft||r.t===ft))kk0.push(r)});
+  kk0.sort(function(a,b){return (a.ob||"")<(b.ob||"")?-1:(a.ob||"")>(b.ob||"")?1:TYPES.indexOf(a.t)-TYPES.indexOf(b.t)||(b.age||0)-(a.age||0)});
+  $("nzKH").hidden=$("nzKW").hidden=!nzQ;
+  $("nzK").innerHTML=nzQ?(kk0.length?'<thead><tr><th style="text-align:left">Объект</th><th style="text-align:left">Тип конструкции</th><th style="text-align:left">Номенклатура</th><th style="text-align:left">Серия партии</th><th>Возраст, дн.</th><th>Шт.</th><th>м²</th></tr></thead><tbody>'+kk0.slice(0,500).map(function(r){return '<tr><td style="text-align:left;white-space:normal;min-width:180px">'+(r.ob||"—")+'</td><td style="text-align:left">'+r.t+'</td><td style="text-align:left;white-space:normal;min-width:240px">'+r.n+'</td><td style="text-align:left">'+String(r.lot).replace(/_/g," · ")+'</td><td'+(r.age>=15?' class="bad"':'')+'>'+r.age+'</td><td>'+fmtn(r.e)+'</td><td>'+fmt(r.em)+'</td></tr>'}).join("")+(kk0.length>500?'<tr><td colspan="7" class="sub">Показано 500 из '+kk0.length+' строк: уточните поиск.</td></tr>':'')+'</tbody>':'<tbody><tr><td class="sub">По объекту «'+nzQv+'» на эту дату НЗП нет.</td></tr></tbody>'):"";
   // unknown type
-  var un={};Z[nzDay].rows.forEach(function(r){if(r.e>0&&r.t==TYPES[4]){var u=un[r.n]||(un[r.n]={q:0,m:0});u.q+=r.e;u.m+=r.em}});
+  var un={};Z[nzDay].rows.forEach(function(r){if(nzHit(r)&&r.e>0&&r.t==TYPES[4]){var u=un[r.n]||(un[r.n]={q:0,m:0});u.q+=r.e;u.m+=r.em}});
   var uk=Object.keys(un).sort(function(a,b){return un[b].m-un[a].m});
   $("nzU").hidden=!uk.length;
   $("nzW").innerHTML=uk.length?'<thead><tr><th class="nm">Номенклатура</th><th>Шт.</th><th>м²</th></tr></thead><tbody>'+uk.slice(0,30).map(function(k){return '<tr><td class="nm">'+k+'</td><td>'+fmtn(un[k].q)+'</td><td>'+fmt(un[k].m)+'</td></tr>'}).join("")+'</tbody>':"";
@@ -426,7 +434,7 @@ function ldShift(rows){
     if(!unit||unit=="x")return;
     if(a=="Основное производство"||a=="Ремонты"||a=="Не привязано"){sec=a;cech=null;if(a=="Основное производство")S0[unit].main={e:e,n:n,m:mm};if(a=="Ремонты")S0[unit].rem={e:e,n:n,m:mm};return}
     if(!sec||unit=="ms")return;
-    if(sec=="Ремонты"&&unit=="alu"&&!LDC.test(a)&&!LDD.test(a)&&!/^Производство/.test(a)&&/Двер|Окн/i.test(a)){var dk=/Двер/i.test(a)?"Д":"О";rd[dk][0]+=e;rd[dk][1]+=mm;return}
+    if(sec=="Ремонты"&&unit=="alu"&&!LDC.test(a)&&!LDD.test(a)&&!/^Производство/.test(a)&&!/^Створ/i.test(a)&&/Двер|Окн/i.test(a)){var dk=/Двер/i.test(a)?"Д":"О";rd[dk][0]+=e;rd[dk][1]+=mm;return}
     if(LDC.test(a)){cech=a;return}
     if(LDD.test(a)){var cn=cech||(unit=="pvh"?"4 цех (ПВХ)":"Прочее");
       if(sec=="Основное производство"){br[unit][cn+"|"+a]=(br[unit][cn+"|"+a]||0)+mm;bq[unit][cn+"|"+a]=(bq[unit][cn+"|"+a]||0)+e}
@@ -729,13 +737,13 @@ function doBlock(C){var S0=$("doS");if(!S0)return;if(tab!="alu"||!C.SC||!C.SC.le
   var T={n:0,Д:[0,0,0,0],О:[0,0,0,0]};A.forEach(function(a){T.n+=a.n;["Д","О"].forEach(function(q){for(var i=0;i<4;i++)T[q][i]+=a[q][i]})});
   var tq=function(a,q){return a[q][0]+a[q][2]},tm=function(a,q){return a[q][1]+a[q][3]};
   S0.hidden=false;
-  $("doP").textContent="За выбранный период, по завершённым сменам с загруженным отчётом «Выпуск продукции»: цеха «Двери (АЛ)» и «Окна (АЛ)» плюс строки РСУ участка АЛ, где в номенклатуре есть «Двери» или «Окна». Всё относится к бригаде, работавшей в смену (по графику)."+(old?" По "+old+" смен нет штук и РСУ-строк (отчёт загружен до появления этого раздела): загрузите отчёты этих смен повторно.":"")+(nm?"":" За период нет загруженных смен.");
+  $("doP").textContent="За выбранный период, по завершённым сменам с загруженным отчётом «Выпуск продукции»: цеха «Двери (АЛ)» и «Окна (АЛ)» плюс строки РСУ участка АЛ, где в номенклатуре есть «Двери» или «Окна» (створки ХАЛ — «Створ…» — не считаются). Всё относится к бригаде, работавшей в смену (по графику)."+(old?" По "+old+" смен нет штук и РСУ-строк (отчёт загружен до появления этого раздела): загрузите отчёты этих смен повторно.":"")+(nm?"":" За период нет загруженных смен.");
   var row=function(l,a,b){return '<tr'+(b?' style="font-weight:700"':'')+'><td>'+l+'</td><td>'+a.n+'</td><td>'+fmtn(tq(a,"Д")+tq(a,"О"))+'</td><td>'+fmt(tm(a,"Д")+tm(a,"О"))+'</td></tr>'};
   $("doT").innerHTML='<thead><tr><th>Бригада</th><th>Смен</th><th>Двери/Окна, шт.</th><th>Двери/Окна, м²</th></tr></thead><tbody>'+A.map(function(a,i){return row("Бригада "+(i+1),a)}).join("")+row("Все бригады",T,1)+'</tbody>';
-  var sub=function(a){var L=a.L.slice().sort(function(x,y){return y.k*2+(y.sh=="н"?1:0)-x.k*2-(x.sh=="н"?1:0)});
+  var sub=function(a){var L=a.L.slice().sort(function(x,y){return x.k*2+(x.sh=="н"?1:0)-y.k*2-(y.sh=="н"?1:0)});
     return L.length?'<table class="dws"><thead><tr><th>Смена</th><th>Двери/Окна, шт.</th><th>Двери/Окна, м²</th></tr></thead><tbody>'+L.map(function(x){var o=x.o;return '<tr><td>'+dl(x.d)+' '+(x.sh=="д"?"день":"ночь")+'</td><td>'+fmtn(o.Д[0]+o.Д[2]+o.О[0]+o.О[2])+'</td><td>'+fmt(o.Д[1]+o.Д[3]+o.О[1]+o.О[3])+'</td></tr>'}).join("")+'</tbody></table>':'<span class="sub">Смен за период нет.</span>'};
   $("doT").innerHTML='<thead><tr><th>Бригада</th><th>Смен</th><th>Двери/Окна, шт.</th><th>Двери/Окна, м²</th></tr></thead><tbody>'+A.map(function(a,i){var o=DWO[i]?1:0;
-    return '<tr class="dwb" data-b="'+i+'" tabindex="0" role="button" aria-expanded="'+(o?"true":"false")+'" style="cursor:pointer"><td>'+(o?"▾ ":"▸ ")+'Бригада '+(i+1)+'</td><td>'+a.n+'</td><td>'+fmtn(tq(a,"Д")+tq(a,"О"))+'</td><td>'+fmt(tm(a,"Д")+tm(a,"О"))+'</td></tr><tr class="dwd" data-b="'+i+'"'+(o?'':' hidden')+'><td colspan="4" style="text-align:left">'+sub(a)+'</td></tr>'}).join("")+row("Все бригады",T,1)+'</tbody>'}
+    return '<tr class="dwb c'+(i+1)+'" data-b="'+i+'" tabindex="0" role="button" aria-expanded="'+(o?"true":"false")+'" style="cursor:pointer"><td>'+(o?"▾ ":"▸ ")+'Бригада '+(i+1)+'</td><td>'+a.n+'</td><td>'+fmtn(tq(a,"Д")+tq(a,"О"))+'</td><td>'+fmt(tm(a,"Д")+tm(a,"О"))+'</td></tr><tr class="dwd c'+(i+1)+'" data-b="'+i+'"'+(o?'':' hidden')+'><td colspan="4" style="text-align:left">'+sub(a)+'</td></tr>'}).join("")+row("Все бригады",T,1)+'</tbody>'}
 var DWO={};
 document.addEventListener("click",function(e){var r=e.target.closest&&e.target.closest("#doT tr.dwb");if(!r)return;var b=r.dataset.b;DWO[b]=!DWO[b];var d=r.parentNode.querySelector('tr.dwd[data-b="'+b+'"]');d.hidden=!DWO[b];r.setAttribute("aria-expanded",DWO[b]?"true":"false");r.firstChild.textContent=(DWO[b]?"▾ ":"▸ ")+"Бригада "+(+b+1)});
 document.addEventListener("keydown",function(e){if((e.key=="Enter"||e.key==" ")&&e.target.classList&&e.target.classList.contains("dwb")){e.preventDefault();e.target.click()}});
@@ -790,7 +798,7 @@ function ddHtml(R){
   if(!rs)h+='<p class="sub">Остатки по ССЗ РСУ не загружены. Пришлите «Анализ выполнения ССЗ» по РСУ.</p>';
   else{var mo={};rs.rows.forEach(function(r){var q=r.d.split(".");var k=q[2]+"-"+q[1];mo[k]=(mo[k]||0)+r.r});var ms=Object.keys(mo).sort(),mx=Math.max.apply(null,ms.map(function(k){return mo[k]}).concat([1])),MN=["","январь","февраль","март","апрель","май","июнь","июль","август","сентябрь","октябрь","ноябрь","декабрь"];
     h+='<div class="kp"><div><small>Факт за период, н/ч</small><b class="num">'+fmt(rs.tf)+'</b></div><div><small>Остаток на конец, н/ч</small><b class="num">'+fmt(rs.tr)+'</b></div><div><small>Факт, м²</small><b class="num">'+f1(T.pvh.rn*RSU.pvh)+'</b></div><div><small>Дат ССЗ с остатком</small><b class="num">'+rs.rows.filter(function(r){return r.r>5e-4}).length+'</b></div></div>'+
-    '<div class="stack"><h3>Остаток по датам ССЗ</h3><div class="dl"><span class="h">Дата ССЗ</span><span class="h">Факт, н/ч</span><span class="h">Остаток, н/ч</span>'+rs.rows.map(function(r){return '<span>'+r.d+'</span><span class="num">'+fmt(r.f)+'</span><span class="num">'+fmt(r.r)+'</span>'}).join("")+'<span><b>Итого</b></span><span class="num"><b>'+fmt(rs.tf)+'</b></span><span class="num"><b>'+fmt(rs.tr)+'</b></span></div></div>'+
+    '<div class="stack"><h3>Остаток по датам ССЗ</h3><div class="dl"><span class="h">Дата ССЗ</span><span class="h">Факт, н/ч</span><span class="h">Остаток, н/ч</span>'+rs.rows.map(function(r){var z=Math.abs(r.r)<5e-4?' zg':'';return '<span class="'+z+'">'+r.d+'</span><span class="num'+z+'">'+fmt(r.f)+'</span><span class="num'+z+'">'+fmt(r.r)+'</span>'}).join("")+(function(){var z=Math.abs(rs.tr)<5e-4?' zg':'';return '<span class="'+z+'"><b>Итого</b></span><span class="num'+z+'"><b>'+fmt(rs.tf)+'</b></span><span class="num'+z+'"><b>'+fmt(rs.tr)+'</b></span>'})()+'</div></div>'+
     '<p class="src">Остаток = остаток из последнего «Анализа ССЗ по РСУ» ('+(rs.src||rs.asof)+') минус факт РСУ по сменам после него'+(rs.before?'; период раньше отчёта, остаток восстановлен прибавлением факта':'')+'.</p>'}
   h+='<p class="src">Алюминий: РСУ за период '+fmt(T.alu.rn)+' н/ч.</p></div>'+
    '<div class="shop"><div class="ch"><h3 style="font-size:17px">Москитные сетки</h3><small>только штуки</small></div>'+
@@ -961,6 +969,7 @@ document.addEventListener("click",function(e){var nd=e.target.closest("[data-nd]
     if(ref)nzSave().then(function(){return ref.set(nzStrip())}).then(function(){ok("Сохранено, увидят все, у кого открыт дашборд")}).catch(function(){ok("Не удалось сохранить в общую базу: нужны права на запись. Данные сохранены только в этом браузере")});
     else ok("Сохранено только в этом браузере");
     render()}});
+document.addEventListener("input",function(e){if(e.target.id=="nzQ"){nzQv=e.target.value.trim();nzQ=nzQv.toLowerCase();render()}});
 document.addEventListener("change",function(e){if(e.target.id=="pmo"){if(e.target.value!=="")preset("M"+e.target.value);render();return}if(e.target.id=="wke"){if(e.target.value){var d=pdate(e.target.value);while(d.getDay()!=0)d=shift(d,1);WKE=iso(d);render()}return}if(e.target.id=="rfd"||e.target.id=="rtd"||e.target.id=="rfs"||e.target.id=="rts"){if($("rfd").value&&$("rtd").value)RP={f:$("rfd").value,fs:$("rfs").value,t:$("rtd").value,ts:$("rts").value};render();return}if(e.target.id=="nzD"){nzDay=+e.target.value;render();return}if(e.target.id=="pfs"||e.target.id=="pts"){PFS=$("pfs").value;PTS=$("pts").value;pk="c";render();return}if(e.target.id=="pf"||e.target.id=="pt"){if($("pf").value)pf=$("pf").value;if($("pt").value)pt=$("pt").value;pk="c";render()}});
 $("fl").onchange=function(){var f=this.files[0];if(!f)return;var r=new FileReader();r.onload=function(){$("iS").value=String(r.result)};r.readAsText(f,"utf-8")};
 $("fx").onchange=function(){var f=this.files[0],inp=this;if(!f)return;var r=new FileReader();
