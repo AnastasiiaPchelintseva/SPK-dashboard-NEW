@@ -741,9 +741,6 @@ function renderWeek(){
     ks.forEach(function(t){var r=wkCalc(t,P0,P1);Cp.pl+=r.pl;Cp.o+=r.o;Cp.rn+=r.rn;Cp.rr+=r.rr;Cp.fr+=r.fr;
       t4+='<tr>'+td(NAMES[t]+"","l")+td(fmt(r.pl))+td(fmt(r.o))+td(pct(r.o,r.pl))+td(fmt(r.rn))+td(fmt(r.rr))+td(KMS[t]>0?fmtn(r.mq):"—")+td(KMS[t]>0?fmt(r.mm):"—")+td(fmt(r.fr))+td(pct(r.fr,r.pl))+'</tr>'});
     h+='<section class="p dys"><h2>Итоги месяца: '+MON[P1.getMonth()]+' '+P1.getFullYear()+' ('+dl(P0)+' – '+dl(P1)+')</h2><p class="sub">Справочно: неделя переходная, месяц закончился внутри недели.</p><div class="x"><table>'+th(["Цех","План ССЗ, м²","Факт осн., м²","% выполнения","РСУ, н/ч","РСУ, м²","МС, шт.","МС, м²","Факт с РСУ и МС, м²","% с РСУ и МС"])+'<tbody>'+t4+'</tbody></table></div></section>'}
-  // telegram
-  var txt=wkText(E,F,W,pw,NZ);
-  h+='<section class="p dys"><h2>Текст для Telegram</h2><textarea id="wkt" readonly rows="'+(txt.split("\n").length+1)+'" style="width:100%;max-width:760px;font:inherit;padding:8px;border:1px solid var(--ln);border-radius:4px;background:var(--sf);color:var(--tx)">'+txt.replace(/&/g,"&amp;").replace(/</g,"&lt;")+'</textarea><div class="dyc"><button id="wkc">Копировать</button><span id="wkm" class="sub"></span></div></section>';
   // ввод
   var iv=function(i,l,v){return '<label>'+l+' <input id="'+i+'" type="text" inputmode="decimal" size="10" value="'+(v!=null?String(v).replace(".",","):"")+'"></label>'};
   h+='<section class="p"><details'+(wkSum("pvh",w)==null?" open":"")+'><summary><b>Утреннее отклонение на '+dl(E)+'</b> (из «Анализа выполнения ССЗ», снятого утром)</summary><div class="dyc" style="margin-top:10px">'+
