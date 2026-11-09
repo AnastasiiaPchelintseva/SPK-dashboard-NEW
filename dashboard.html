@@ -560,14 +560,13 @@ function exNum(v){var x=String(v).replace(/[  \s]/g,"").replace("−","-");
   if(/^-?\d+(,\d+)?%$/.test(x))return {n:parseFloat(x.replace(",","."))/100,f:"0.0%"};
   if(/^-?\d+(,\d+)?$/.test(x)&&x.length<16){var d=x.indexOf(",")>-1?x.length-x.indexOf(",")-1:0;return {n:parseFloat(x.replace(",",".")),f:d?"0."+Array(d+1).join("0"):"0"}}
   return null}
-function exShopXlsx(){exBusy(1);exSt("Готовлю Excel…");
-  exLoad("https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js",function(){return window.ExcelJS}).then(function(){
-    var t=tab,al=t=="alu",C=calc(t),m=ymk(C.from),kr=RSU[t],km=KMS[t],hm=km>0,thin={style:"thin",color:{argb:"FF000000"}},thick={style:"thick",color:{argb:"FF000000"}};
+function exShopSheet(wb,t,m){
+    var al=t=="alu",C=calc(t),kr=RSU[t],km=KMS[t],hm=km>0,thin={style:"thin",color:{argb:"FF000000"}},thick={style:"thick",color:{argb:"FF000000"}};
     var L=function(n){var s="";while(n>0){var r=(n-1)%26;s=String.fromCharCode(65+r)+s;n=(n-r-1)/26|0}return s};
     var rows=C.SC.filter(function(r){return ymk(r.d)==m}).sort(function(a,b){return key(a.d)<key(b.d)?-1:key(a.d)>key(b.d)?1:(a.sh==b.sh?0:a.sh=="д"?-1:1)});
     if(!rows.length)throw new Error("none");
     var FS={};C.P.F.forEach(function(r){var q=r.k+r.sh,x=FS[q]||(FS[q]={o:0,r:0,mq:0,y:0});x.o+=r.o;x.r+=r.r;x.mq+=r.mq;x.y+=r.y});
-    var wb=new ExcelJS.Workbook(),ws=wb.addWorksheet(al?"АЛ":"ПВХ"),R0=3,RN=R0+rows.length-1,F="Arial";
+    var ws=wb.addWorksheet(al?"АЛ":"ПВХ"),R0=3,RN=R0+rows.length-1,F="Arial";
     var fill=function(c){return {type:"pattern",pattern:"solid",fgColor:{argb:c}}},CH="FFFDE9D9",CS="FFE4DFEC",CT="FFDAEEF3",CA="FFD7E4BD";
     var put=function(a,v,o){var c=ws.getCell(a);if(v!==undefined&&v!==null)c.value=v;o=o||{};c.font={name:F,size:o.sz||10,bold:!!o.b};c.alignment={horizontal:o.h||"center",vertical:"middle",wrapText:true};
       c.border={left:o.l||thin,right:o.r||thin,top:o.t||thin,bottom:o.bt||thin};if(o.f)c.fill=fill(o.f);if(o.nf)c.numFmt=o.nf;return c};
@@ -630,7 +629,11 @@ function exShopXlsx(){exBusy(1);exSt("Готовлю Excel…");
     var fa=mu(12,[1,2,3],A);put("R12","μ",{b:1,h:"right",f:CT,sz:12});
     put("S12",fa[0],{b:1,f:CT,sz:12,nf:"0.00"});put("T12",fa[1],{b:1,f:CT,sz:12,nf:"0.00"});put("U12",fa[2],{b:1,f:CT,sz:12,nf:"0.00"});
     ws.views=[{state:"frozen",xSplit:1,ySplit:2}];ws.pageSetup={paperSize:9,orientation:"landscape",fitToPage:true,fitToWidth:1,fitToHeight:1,margins:{left:.3,right:.3,top:.3,bottom:.3,header:.2,footer:.2}};
-    return wb.xlsx.writeBuffer().then(function(buf){var u8=new Uint8Array(buf);return exSave(exName("xlsx"),u8.buffer.slice(u8.byteOffset,u8.byteOffset+u8.byteLength))}).then(function(){exSt("Файл Excel сохранён")})
+}
+function exShopXlsx(){exBusy(1);exSt("Готовлю Excel…");
+  exLoad("https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js",function(){return window.ExcelJS}).then(function(){
+    var m=ymk(calc(tab).from),wb=new ExcelJS.Workbook();exShopSheet(wb,"alu",m);exShopSheet(wb,"pvh",m);
+    return wb.xlsx.writeBuffer().then(function(buf){var u8=new Uint8Array(buf);return exSave("Дашборд СПК Выработка на человека "+iso(today())+".xlsx",u8.buffer.slice(u8.byteOffset,u8.byteOffset+u8.byteLength))}).then(function(){exSt("Файл Excel сохранён")})
   }).catch(function(e){console.error(e);exSt(e&&e.code=="declined"?"Сохранение отменено":e&&e.message=="none"?"Нет графика бригад за этот месяц":"Не удалось сохранить Excel")}).then(function(){exBusy(0)})}
 function exXlsx(){if(view=="shop")return exShopXlsx();exBusy(1);exSt("Готовлю Excel…");
   exLoad("https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js",function(){return window.XLSX}).then(function(){
