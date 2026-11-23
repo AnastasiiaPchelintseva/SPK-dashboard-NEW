@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Производство: план/факт и НЗП, м²</title>
-<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;700&display=swap" rel="stylesheet">
+
 <style>
 :root{--cur:#e9a82c;--oth:#9db4cc;--bg:#eef1f4;--sf:#fff;--tx:#14212b;--mt:#5d6b77;--ln:#d5dce2;--pl:#6d7c89;--ok:#1e7a55;--bad:#c4361f;--ac:#1f5fa8;--a1:#9cc3e8;--a2:#e9b44c;--a3:#c4361f;--r1:#f4e6bf;--r2:#ecc774;--r3:#d99a2b;--r4:#a8660c;--r5:#6b3b05;--t1:#2a78d6;--t2:#eb6834;--t3:#1baf7a;--t4:#eda100;--t5:#8a98a5;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -12,7 +12,7 @@ box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:en
 :root[data-theme="dark"]{--cur:#e0a93f;--oth:#4b6d8c;--bg:#10181f;--sf:#17222b;--tx:#e8eef3;--mt:#93a2ae;--ln:#2b3a46;--pl:#9aa8b4;--ok:#4cc08e;--bad:#ff7a63;--ac:#6fb0f2;--a1:#4b7fae;--a2:#d9a53f;--a3:#ff7a63;--r1:#4f3b10;--r2:#7a5a17;--r3:#a97d25;--r4:#d4a64a;--r5:#f2d38c;--t1:#3987e5;--t2:#d95926;--t3:#199e70;--t4:#c98500;--t5:#7b8a97}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 "Golos Text",system-ui,sans-serif}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 .w{max-width:1180px;margin:0 auto;padding:20px 16px 40px}
 header{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px;margin-bottom:14px}
 h1{font-size:21px;margin:0 0 8px;font-weight:700}
@@ -33,7 +33,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px soli
 .g{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;margin-top:16px}
 .p{background:var(--sf);border:1px solid var(--ln);border-radius:6px;padding:16px;min-width:0}
 .x{overflow-x:auto}svg{display:block;width:100%;height:auto}
-svg text{fill:var(--mt);font:11px "Golos Text",sans-serif}
+svg text{fill:var(--mt);font:11px system-ui,sans-serif}
 .lg{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--mt);margin-top:8px}
 .lg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px}
 table{width:100%;border-collapse:collapse;font-size:14px;min-width:420px}
@@ -101,7 +101,7 @@ body.pdfx header,body.pdfx .exp,body.pdfx .per,body.pdfx .seg,body.pdfx .nzc,bod
 <body>
 <div class="w">
 <header>
-  <div><h1>Производство: план/факт и НЗП, м²</h1><div class="tabs" role="tablist" id="tabs"></div><div class="exp" data-nox="1"><button id="exPdf" type="button">Сохранить PDF</button><button id="exXls" type="button">Сохранить Excel</button><span id="exSt" class="mt" role="status"></span></div></div>
+  <div><h1>Производство: план/факт и НЗП, м²</h1><div class="tabs" role="tablist" id="tabs"></div><div class="exp" data-nox="1"><button id="exPdf" type="button">Сохранить PDF</button><button id="exXls" type="button">Сохранить Excel</button><span id="exSt" class="mt" role="status"></span><span id="spkUser" class="mt" style="margin-left:auto"></span></div></div>
   <div class="seg std" id="pvs" role="group" aria-label="План для сравнения">План для сравнения:</div>
   <div class="seg" id="fvs" role="group" aria-label="Что считать фактом"></div>
 </header>
@@ -190,7 +190,7 @@ body.pdfx header,body.pdfx .exp,body.pdfx .per,body.pdfx .seg,body.pdfx .nzc,bod
 </details>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="/static/vendor/xlsx.full.min.js"></script>
 <script>
 var fmt=function(n){return (Math.abs(n)<5e-4?0:n).toLocaleString("ru-RU",{minimumFractionDigits:3,maximumFractionDigits:3})},fmtn=function(n){return Math.round(n).toLocaleString("ru-RU")};
 var pct=function(a,b){return b?(a/b*100).toFixed(1).replace(".",",")+"%":"—"};
@@ -202,7 +202,7 @@ var DEF={
   sz:mk([950,950,950,950,950,960,960,960,950,950,950,950,960,960],[912,940,901,985,950,890,967,930,921,944,938,955,917,960])},
  alu:{demo:true,budget:"10.2026;16500",oper:"10.2026;16000",
   sz:mk([540,540,540,540,540,550,550,550,540,540,540,540,550,550],[521,548,530,566,540,498,552,535,520,544,530,547,519,556])}};
-var S=JSON.parse(JSON.stringify(DEF)),nzDay=null,tab="pvh",pv="oper",mode="tot",ref=null,filled=false,pf=null,pt=null,pk="m",PFS="д",PTS="н",view="shop",RP=null,RS="pvh";
+var S=JSON.parse(JSON.stringify(DEF)),nzDay=null,tab="pvh",pv="oper",mode="tot",filled=false,pf=null,pt=null,pk="m",PFS="д",PTS="н",view="shop",RP=null,RS="pvh";
 try{var ls=localStorage.getItem("prod-dash");if(ls)S=JSON.parse(ls)}catch(e){}
 
 function num(s){var v=parseFloat(String(s).replace(/\s/g,"").replace(",","."));return isNaN(v)?0:v}
@@ -539,9 +539,9 @@ function ldGo(){
   if(!msg.length){$("ldSt").textContent="Нечего записывать.";return}
   var ok=function(m){$("ldSt").textContent=m};
   try{localStorage.setItem("prod-dash",JSON.stringify(S))}catch(x){}
-  if(!ref||!nzDb){ok("База недоступна, данные только в этом браузере.");return}
+  if(!nzDb){ok("База недоступна, данные только в этом браузере.");return}
   if(JSON.stringify(nzStrip()).length>250000){ok("Слишком много данных для основного документа.");return}
-  nzSave().then(function(){return ref.set(nzStrip())}).then(function(){return jobs.reduce(function(p,j){return p.then(j)},Promise.resolve())}).then(function(){LD.items=[];LD.log="Записано: "+msg.join(", ")+".";renderLoad()}).catch(function(e){ok("Не удалось записать в базу: "+((e&&e.message)||"нужны права на запись")+". Повторите; если повторяется, пришлите этот текст.")})}
+  nzSave().then(function(){return dbPut("state","main",nzStrip())}).then(function(){return jobs.reduce(function(p,j){return p.then(j)},Promise.resolve())}).then(function(){LD.items=[];LD.log="Записано: "+msg.join(", ")+".";renderLoad()}).catch(function(e){ok("Не удалось записать в базу: "+((e&&e.message)||"нужны права на запись")+". Повторите; если повторяется, пришлите этот текст.")})}
 
 document.addEventListener("change",function(e){if(/^(ldE|ldA|ldAs|ldAdj)$/.test(e.target.id))ldPrev();if(e.target.id=="ldf"&&e.target.files.length){ldRead(e.target.files)}});
 document.addEventListener("dragover",function(e){if(e.target.closest&&e.target.closest("#ldz"))e.preventDefault()});
@@ -553,7 +553,7 @@ document.addEventListener("click",function(e){var b=e.target.closest("button");i
 function exName(ext){var n=view=="shop"?NAMES[tab]:view=="day"?"Отчёт ДД":view=="week"?"Отчёт за неделю":"Загрузка 1С";return "Дашборд СПК "+n+" "+iso(today())+"."+ext}
 function exSt(t){var e=$("exSt");if(e)e.textContent=t||""}
 function exBusy(b){["exPdf","exXls"].forEach(function(i){var e=$(i);if(e)e.disabled=!!b})}
-function exSave(name,data){return (window.claude&&claude.use?claude.use("downloads"):Promise.resolve(null)).then(function(d){
+function exSave(name,data){return Promise.resolve(null).then(function(d){
   if(d)return d.save({filename:name,data:data});
   var u=URL.createObjectURL(new Blob([data])),a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},4000)})}
 function exLoad(url,test){return new Promise(function(res,rej){if(test()){res();return}var s=document.createElement("script");s.src=url;s.onload=function(){test()?res():rej(new Error("lib"))};s.onerror=function(){rej(new Error("lib"))};document.head.appendChild(s)})}
@@ -632,12 +632,12 @@ function exShopSheet(wb,t,m){
     ws.views=[{state:"frozen",xSplit:1,ySplit:2}];ws.pageSetup={paperSize:9,orientation:"landscape",fitToPage:true,fitToWidth:1,fitToHeight:1,margins:{left:.3,right:.3,top:.3,bottom:.3,header:.2,footer:.2}};
 }
 function exShopXlsx(){exBusy(1);exSt("Готовлю Excel…");
-  exLoad("https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js",function(){return window.ExcelJS}).then(function(){
+  exLoad("/static/vendor/exceljs.min.js",function(){return window.ExcelJS}).then(function(){
     var m=ymk(calc(tab).from),wb=new ExcelJS.Workbook();exShopSheet(wb,"alu",m);exShopSheet(wb,"pvh",m);
     return wb.xlsx.writeBuffer().then(function(buf){var u8=new Uint8Array(buf);return exSave("Дашборд СПК Выработка на человека "+iso(today())+".xlsx",u8.buffer.slice(u8.byteOffset,u8.byteOffset+u8.byteLength))}).then(function(){exSt("Файл Excel сохранён")})
   }).catch(function(e){console.error(e);exSt(e&&e.code=="declined"?"Сохранение отменено":e&&e.message=="none"?"Нет графика бригад за этот месяц":"Не удалось сохранить Excel")}).then(function(){exBusy(0)})}
 function exXlsx(){if(view=="shop")return exShopXlsx();exBusy(1);exSt("Готовлю Excel…");
-  exLoad("https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js",function(){return window.XLSX}).then(function(){
+  exLoad("/static/vendor/xlsx.full.min.js",function(){return window.XLSX}).then(function(){
     var wb=XLSX.utils.book_new(),used={},cnt=0,root=document.querySelector(".w");
     Array.prototype.forEach.call(root.querySelectorAll("table"),function(tb){
       var dt=tb.closest("details");if(!tb.rows.length||(dt&&dt.classList.contains("std"))||(tb.offsetParent===null&&!(dt&&dt.offsetParent!==null)))return;
@@ -665,8 +665,8 @@ function exBlocks(root){var out=[],rt=root.getBoundingClientRect(),W=rt.width,k=
     if(r.height<=maxH||!c.children.length)out.push({y:r.top-rt.top,h:r.height,x:r.left-rt.left,w:r.width});else walk(c)})})(root);
   return {b:out,W:W,k:k}}
 function exPdf(){exBusy(1);exSt("Готовлю PDF…");
-  exLoad("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js",function(){return window.html2canvas}).then(function(){
-    return exLoad("https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",function(){return window.jspdf&&window.jspdf.jsPDF})}).then(function(){
+  exLoad("/static/vendor/html2canvas.min.js",function(){return window.html2canvas}).then(function(){
+    return exLoad("/static/vendor/jspdf.umd.min.js",function(){return window.jspdf&&window.jspdf.jsPDF})}).then(function(){
     window.scrollTo(0,0);document.body.classList.add("pdfx");var root=document.querySelector(".w"),bg=getComputedStyle(document.body).backgroundColor,B=exBlocks(root),rt=root.getBoundingClientRect(),
       sc=Math.min(1.5,Math.sqrt(30e6/(rt.width*rt.height)));
     return html2canvas(root,{scale:sc,backgroundColor:bg,useCORS:true,logging:false,scrollX:0,scrollY:0,onclone:function(d){exFix(d)},ignoreElements:function(el){return el.tagName=="SCRIPT"}}).then(function(cv){document.body.classList.remove("pdfx");return {cv:cv,B:B,sc:sc,rt:rt,bg:bg}},function(e){document.body.classList.remove("pdfx");throw e})}).then(function(o){
@@ -1040,7 +1040,7 @@ document.addEventListener("click",function(e){var nd=e.target.closest("[data-nd]
     try{localStorage.setItem("prod-dash",JSON.stringify(S))}catch(x){}
     var ok=function(m){$("st").textContent=m};
     if(JSON.stringify(nzStrip()).length>250000){ok("Слишком много данных для сохранения в основной документ базы.");return}
-    if(ref)nzSave().then(function(){return ref.set(nzStrip())}).then(function(){ok("Сохранено, увидят все, у кого открыт дашборд")}).catch(function(){ok("Не удалось сохранить в общую базу: нужны права на запись. Данные сохранены только в этом браузере")});
+    if(nzDb)nzSave().then(function(){return dbPut("state","main",nzStrip())}).then(function(){ok("Сохранено, увидят все, у кого открыт дашборд")}).catch(function(){ok("Не удалось сохранить в общую базу: нужны права на запись. Данные сохранены только в этом браузере")});
     else ok("Сохранено только в этом браузере");
     render()}});
 document.addEventListener("input",function(e){if(e.target.id=="nzQ"){nzQv=e.target.value.trim();nzQ=nzQv.toLowerCase();render()}});
@@ -1077,25 +1077,58 @@ $("fz").onchange=function(){var fs=[].slice.call(this.files),inp=this;if(!fs.len
     if(msg.length)render();inp.value=""})};
 $("iT").oninput=function(){S[tab].tmap=this.value;render()};
 fill();render();
-var nzDb=null,nzDocs={alu:{},pvh:{}},nzDict={},nzSaved={};
+/* ===== База дашборда: API сервиса (spk/api.py) ===== */
+var nzDb=null,nzDocs={alu:{},pvh:{}},nzDict={},nzSaved={},DBSEQ=0,DBVER={},DBTIMER=null,DBBUSY=false;
 function nzStrip(){var c=JSON.parse(JSON.stringify(S));["alu","pvh"].forEach(function(t){if(c[t]){delete c[t].nzp;delete c[t].nom;delete c[t].obj}});return c}
 function nzApply(){["alu","pvh"].forEach(function(t){if(!S[t])return;var ks=Object.keys(nzDocs[t]||{}).sort();if(ks.length)S[t].nzp=ks.map(function(k){return nzDocs[t][k]}).join("\n");
   var dd=nzDict[t];if(dd){S[t].nom=dd.nom||"";S[t].obj=dd.obj||""}})}
+function dbKey(c,i){return c+"/"+i}
+function dbPut(c,i,d){var k=dbKey(c,i),v=DBVER[k];return fetch("/api/db/"+encodeURIComponent(c)+"/"+encodeURIComponent(i),{method:"PUT",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify({data:d,if_version:v==null?null:v})}).then(function(r){
+  if(r.status==409)return r.json().then(function(j){var cur=j.current;if(cur){DBVER[k]=cur.version;DBSEQ=Math.max(DBSEQ,cur.seq)}throw new Error("документ изменился, обновите страницу")});
+  if(!r.ok)return r.json().catch(function(){return {}}).then(function(j){throw new Error(j.error||("ошибка "+r.status))});
+  return r.json().then(function(doc){DBVER[k]=doc.version;DBSEQ=Math.max(DBSEQ,doc.seq);return doc})})}
+function dbDel(c,i){var k=dbKey(c,i),v=DBVER[k];return fetch("/api/db/"+encodeURIComponent(c)+"/"+encodeURIComponent(i)+(v==null?"":"?if_version="+v),{method:"DELETE",credentials:"same-origin"}).then(function(r){
+  if(r.status==409)throw new Error("документ изменился, обновите страницу");
+  if(!r.ok)return r.json().catch(function(){return {}}).then(function(j){throw new Error(j.error||("ошибка "+r.status))});
+  delete DBVER[k];return r.json()})}
 function nzSave(){if(!nzDb)return Promise.resolve();var jobs=[];
   ["alu","pvh"].forEach(function(t){var D=S[t];if(!D)return;var g={},ord=[];
     String(D.nzp||"").split(/\r?\n/).forEach(function(l){var d=pdate(l.split(";")[0]);if(!d)return;var id=t+"-"+key(d);if(!g[id]){g[id]={d:l.split(";")[0],t:[]};ord.push(id)}g[id].t.push(l)});
-    ord.forEach(function(id){var txt=g[id].t.join("\n");if(nzSaved[id]!==txt)jobs.push(function(){return nzDb.doc("nzp/"+id).set({t:t,d:g[id].d,lines:txt}).then(function(){nzSaved[id]=txt})})});
-    Object.keys(nzSaved).forEach(function(id){if(id.indexOf(t+"-")==0&&!g[id])jobs.push(function(){return nzDb.doc("nzp/"+id).delete().then(function(){delete nzSaved[id]})})});
-    var sg=(D.nom||"")+"\u0001"+(D.obj||"");if((D.nom||D.obj)&&nzSaved["d-"+t]!==sg){var nm0=D.nom||"",ob0=D.obj||"";jobs.push(function(){return nzDb.doc("nzd/"+t).set({nom:nm0,obj:ob0}).then(function(){nzSaved["d-"+t]=sg})})}});
+    ord.forEach(function(id){var txt=g[id].t.join("\n");if(nzSaved[id]!==txt)jobs.push(function(){return dbPut("nzp",id,{t:t,d:g[id].d,lines:txt}).then(function(){nzSaved[id]=txt})})});
+    Object.keys(nzSaved).forEach(function(id){if(id.indexOf(t+"-")==0&&!g[id])jobs.push(function(){return dbDel("nzp",id).then(function(){delete nzSaved[id]})})});
+    var sg=(D.nom||"")+"\u0001"+(D.obj||"");if((D.nom||D.obj)&&nzSaved["d-"+t]!==sg){var nm0=D.nom||"",ob0=D.obj||"";jobs.push(function(){return dbPut("nzd",t,{nom:nm0,obj:ob0}).then(function(){nzSaved["d-"+t]=sg})})}});
   return jobs.reduce(function(p,j){return p.then(j)},Promise.resolve())}
-if(window.claude&&claude.use){claude.use("db").then(function(db){if(!db)return;ref=db.doc("state/main");nzDb=db;
-  db.collection("nzp").onSnapshot(function(q){var o={alu:{},pvh:{}};q.docs.forEach(function(x){var v=x.data();if(v&&o[v.t]&&typeof v.lines==="string"){o[v.t][x.id]=v.lines;nzSaved[x.id]=v.lines}});nzDocs=o;nzApply();render()},function(){});
-  db.collection("wk").onSnapshot(function(q){var o={};q.docs.forEach(function(x){o[x.id]=x.data()});WKD=o;if(view=="week")render()},function(){});
-  db.collection("brk").onSnapshot(function(q){var o={};q.docs.forEach(function(x){o[x.id]=x.data()});BRK=o;if(view=="day"||tab=="alu")render()},function(){});
-  db.collection("rsu").onSnapshot(function(q){var o={};q.docs.forEach(function(x){o[x.id]=x.data()});RSUB=o;if(view=="day")render()},function(){});
-  db.collection("msd").onSnapshot(function(q){var o={};q.docs.forEach(function(x){o[x.id]=x.data()});MSD=o;if(view=="day"||view=="week")render()},function(){});
-  db.collection("nzd").onSnapshot(function(q){var o={};q.docs.forEach(function(x){var v=x.data();if(v){o[x.id]=v;nzSaved["d-"+x.id]=(v.nom||"")+"\u0001"+(v.obj||"")}});nzDict=o;nzApply();render()},function(){});
-  ref.onSnapshot(function(s){if(s.exists){var d=s.data();if(d&&d.pvh&&d.alu){S=JSON.parse(JSON.stringify(d));nzApply();if(!filled||!document.querySelector("details[open]"))fill();filled=true;render()}}},function(){})}).catch(function(){})}
-</script>
+function dbApply(docs){var st={},nz={alu:{},pvh:{}},nd={},wk={},brk={},rsu={},msd={};
+  docs.forEach(function(x){var k=dbKey(x.collection,x.id);DBVER[k]=x.version;DBSEQ=Math.max(DBSEQ,x.seq);
+    if(x.deleted){if(x.collection=="nzp")delete nzSaved[x.id];return}
+    var v=x.data;if(!v)return;
+    if(x.collection=="state")st=v;
+    else if(x.collection=="nzp"){if(nz[v.t]){nz[v.t][x.id]=v.lines;nzSaved[x.id]=v.lines}}
+    else if(x.collection=="nzd"){nd[x.id]=v;nzSaved["d-"+x.id]=(v.nom||"")+"\u0001"+(v.obj||"")}
+    else if(x.collection=="wk")wk[x.id]=v;
+    else if(x.collection=="brk")brk[x.id]=v;
+    else if(x.collection=="rsu")rsu[x.id]=v;
+    else if(x.collection=="msd")msd[x.id]=v});
+  var changed=false;
+  if(st&&st.pvh&&st.alu){S=JSON.parse(JSON.stringify(st));changed=true}
+  nzDocs=nz;nzDict=nd;WKD=wk;BRK=brk;RSUB=rsu;MSD=msd;
+  nzApply();if(changed&&(!filled||!document.querySelector("details[open]")))fill();filled=true;render()}
+function dbPoll(){if(DBBUSY||!nzDb)return;DBBUSY=true;
+  fetch("/api/db/changes?since="+DBSEQ,{credentials:"same-origin"}).then(function(r){return r.ok?r.json():null}).then(function(j){
+    if(j&&j.documents&&j.documents.length)dbApply(j.documents);else if(j)DBSEQ=Math.max(DBSEQ,j.seq||0)}).catch(function(){}).then(function(){DBBUSY=false})}
+function dbStart(){nzDb={doc:function(p){var i=p.indexOf("/"),c=p.slice(0,i),id=p.slice(i+1);return {set:function(d){return dbPut(c,id,d)},delete:function(){return dbDel(c,id)}}}};
+  fetch("/api/db",{credentials:"same-origin"}).then(function(r){if(!r.ok)throw new Error("нет доступа к базе");return r.json()}).then(function(j){
+    var all=[];Object.keys(j.collections||{}).forEach(function(c){all=all.concat(j.collections[c])});DBSEQ=j.seq||0;dbApply(all);
+    var iv=Math.max(5,+(window.SPK_SYNC_S||20));if(DBTIMER)clearInterval(DBTIMER);DBTIMER=setInterval(dbPoll,iv*1000)}).catch(function(e){console.warn("база дашборда:",e&&e.message)})}
+dbStart();
+(function(){var u=$("spkUser");if(!u)return;
+  fetch("/api/me",{credentials:"same-origin"}).then(function(r){return r.ok?r.json():null}).then(function(m){if(!m)return;
+    window.SPK_SYNC_S=m.sync_interval_s;
+    var h='<span title="'+(m.role||"без роли")+'">'+(m.display_name||m.username)+'</span>';
+    if(m.role=="administrator")h+=' · <a href="/settings">Настройки</a> · <a href="/admin/users">Пользователи</a>';
+    h+=' · <a href="/account/sessions">Сессии</a> · <a href="/logout" onclick="return spkLogout()">Выйти</a>';
+    u.innerHTML=h}).catch(function(){})})();
+function spkLogout(){fetch("/api/csrf",{credentials:"same-origin"}).then(function(r){return r.json()}).then(function(j){
+  var f=document.createElement("form");f.method="post";f.action="/logout";var i=document.createElement("input");i.type="hidden";i.name="csrf";i.value=j.csrf;f.appendChild(i);document.body.appendChild(f);f.submit()}).catch(function(){location.href="/login"});return false}</script>
 </body>
 </html>

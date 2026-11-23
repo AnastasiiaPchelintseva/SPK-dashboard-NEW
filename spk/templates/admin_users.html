@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% from "_macros.html" import csrf_field with context %}
+{% block content %}
+<h1>Пользователи</h1>
+<p class="muted">Вход — через Яндекс с почтой разрешённого домена; новый пользователь регистрируется сам и получает роль только от администратора.
+Заранее созданный по email привязывается к Яндексу при первом входе, выданная роль сохраняется.</p>
+<div class="card small">{% for key, text in roles.items() %}<div><b>{{ key }}</b> — {{ text }}</div>{% endfor %}<div><b>без роли</b> — видит «Доступ не выдан, обратитесь к администратору» и свои сессии</div></div>
+
+<form method="get" class="filters">
+  <label>Поиск<input name="query" value="{{ query }}"></label>
+  <label>Состояние<select name="status">{% for s, t in [("", "все"), ("created", "создан"), ("active", "активен"), ("blocked", "заблокирован")] %}<option value="{{ s }}" {{ 'selected' if s == status }}>{{ t }}</option>{% endfor %}</select></label>
+  <button type="submit">Показать</button>
+</form>
+
+<details><summary>Создать пользователя по email</summary>
+<form method="post" action="/admin/users" class="inline">{{ csrf_field() }}
+  <input name="email" type="email" placeholder="ivanov@pik.ru" required>
+  <select name="role"><option value="">без роли</option>{% for key in roles %}<option value="{{ key }}">{{ key }}</option>{% endfor %}</select>
+  <button type="submit">Создать</button>
+</form></details>
+
+<div class="scroll"><table>
+  <tr><th>Имя</th><th>Email</th><th>Состояние</th><th>Роль</th><th>Последний вход</th><th>Действия</th></tr>
+  {% for u in rows %}<tr>
+    <td><b>{{ u.username }}</b><br><span class="small muted">{{ u.display_name }}</span></td>
+    <td>{{ u.email }}</td>
+    <td>{{ {"created": "создан", "active": "активен", "blocked": "заблокирован"}[u.status] }}</td>
+    <td>{% if u.is_local_admin %}{{ u.role }}{% else %}
+      <form method="post" action="/admin/users/{{ u.id }}" class="inline">{{ csrf_field() }}<input type="hidden" name="action" value="role">
+        <select name="role"><option value="">без роли</option>{% for key in roles %}<option value="{{ key }}" {{ 'selected' if key == u.role }}>{{ key }}</option>{% endfor %}</select>
+        <button class="ghost">Сменить</button></form>{% endif %}</td>
+    <td>{{ u.last_login_at or "—" }}</td>
+    <td>{% if u.is_local_admin %}<span class="small muted">локальный администратор</span>{% else %}
+      {% if u.status == "blocked" %}
+        <form method="post" action="/admin/users/{{ u.id }}" class="inline">{{ csrf_field() }}<input type="hidden" name="action" value="unblock"><button class="ghost">Разблокировать</button></form>
+      {% else %}
+        <form method="post" action="/admin/users/{{ u.id }}" class="inline">{{ csrf_field() }}<input type="hidden" name="action" value="block"><button class="danger">Заблокировать</button></form>
+      {% endif %}
+      <form method="post" action="/admin/users/{{ u.id }}" class="inline">{{ csrf_field() }}<input type="hidden" name="action" value="email">
+        <input name="email" type="email" value="{{ u.email }}" style="width:190px"><button class="ghost">Сменить email</button></form>
+      <form method="post" action="/admin/users/{{ u.id }}" class="inline" onsubmit="return confirm('Удалить {{ u.username }}?')">{{ csrf_field() }}<input type="hidden" name="action" value="delete"><button class="ghost">Удалить</button></form>
+    {% endif %}</td>
+  </tr>{% endfor %}
+</table></div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Журнал аудита</h1>
+<p class="muted">Входы и отказы, сессии, пользователи, изменения настроек. Последние 300 записей.</p>
+<form method="get" class="filters">
+  <label>Действие<select name="action"><option value="">все</option>{% for a in actions %}<option value="{{ a }}" {{ 'selected' if a == action }}>{{ a }}</option>{% endfor %}</select></label>
+  <button type="submit">Показать</button>
+</form>
+<div class="scroll"><table>
+  <tr><th>Когда</th><th>Кто</th><th>IP</th><th>Действие</th><th>Над чем</th><th>Было</th><th>Стало</th></tr>
+  {% for r in rows %}<tr><td>{{ r.at }}</td><td>{{ r.actor }}</td><td>{{ r.ip }}</td><td>{{ r.action }}</td><td>{{ r.target }}</td>
+    <td class="small">{{ r.old_value or "" }}</td><td class="small">{{ r.new_value or "" }}</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

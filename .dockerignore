@@ -1,0 +1,23 @@
+.env
+.env.*
+!.env.example
+
+.git/
+.venv/
+venv/
+env/
+**/__pycache__/
+**/*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+*.log
+
+# Windows-обвязка и документация в контейнере не нужны.
+*.bat
+.vscode/
+.idea/
+
+# Выгрузки и исходники 1С — только для разработки, в образ не идут.
+source-files/
+sample-data/

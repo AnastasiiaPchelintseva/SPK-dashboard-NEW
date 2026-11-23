@@ -1,0 +1,27 @@
+# Дашборд СПК в Docker: веб (FastAPI) и страница дашборда, данные — в PostgreSQL.
+#
+#   copy .env.example .env                                                        # заполнить
+#   docker compose -p spk_dashboard -f docker-compose.server.yml up -d --build    # собрать и запустить
+#   docker compose -p spk_dashboard -f docker-compose.server.yml logs -f app
+#
+# Публикация из общего репозитория: ops/deploy.sh SPK-dashboard (см. DEPLOY.md в его корне).
+# Подробности — AGENTS.md, раздел «Docker».
+
+services:
+  app:
+    build:
+      context: .
+    image: ${SPK_DASHBOARD_IMAGE:-spk-dashboard:local}
+    env_file:
+      - path: .env
+        required: false
+    # База — PostgreSQL (PLATFORM.md): DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD — из .env
+    # (на сервере — .secrets/SPK-dashboard.env). Без них приложение показывает «Не настроено».
+    environment:
+      TZ: ${TZ:-Europe/Moscow}
+    # На сервере PostgreSQL стоит на хосте: DB_HOST=host.docker.internal (на Linux имя само не резолвится).
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "${APP_BIND:-127.0.0.1}:${APP_PORT:-8600}:8000"
+    restart: unless-stopped

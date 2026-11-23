@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% from "_macros.html" import csrf_field with context %}
+{% block content %}
+<h1>{{ "Мои сессии" if mine else "Сессии" }}</h1>
+<p class="muted">Сессия живёт 7 дней с последней активности. Завершённая сессия выходит из системы на своём устройстве при следующем запросе.</p>
+{% if not rows %}<p class="muted">Активных сессий нет.</p>{% else %}
+<div class="scroll"><table>
+  <tr>{% if not mine %}<th>Пользователь</th>{% endif %}<th>IP</th><th>Браузер</th><th>Создана</th><th>Активность</th><th></th></tr>
+  {% for r in rows %}<tr>
+    {% if not mine %}<td>{{ r.username }}</td>{% endif %}
+    <td>{{ r.ip }}</td><td class="small">{{ r.user_agent }}</td><td>{{ r.created_at }}</td><td>{{ r.last_activity_at }}</td>
+    <td>
+      {% if r.id == sess.session_id %}<span class="small muted">текущая</span>{% endif %}
+      <form method="post" action="{{ '/account/sessions/%s/delete' % r.id if mine else '/admin/sessions/%s/delete' % r.id }}" class="inline">{{ csrf_field() }}<button class="ghost">Завершить</button></form>
+      {% if not mine %}<form method="post" action="/admin/users/{{ r.user_id }}/sessions/delete" class="inline">{{ csrf_field() }}<button class="ghost">Все сессии пользователя</button></form>{% endif %}
+    </td></tr>{% endfor %}
+</table></div>
+{% endif %}
+{% endblock %}

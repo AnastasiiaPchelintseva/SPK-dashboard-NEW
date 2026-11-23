@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% from "_macros.html" import csrf_field with context %}
+{% block content %}
+<h1>Настройки</h1>
+<p class="muted">Параметры работы приложения (PLATFORM.md: в <code>.env</code> остаются только <code>ADMIN_PASSWORD</code>, <code>DB_*</code> и <code>YANDEX_*</code>).
+Неверное значение не сохраняется; каждая правка — в журнал аудита. Правка действует без перезапуска.</p>
+
+<h2>Данные дашборда</h2>
+<div class="metrics">
+  {% for name, count in stats.items() %}<div class="metric"><div class="k">{{ name }}</div><div class="v">{{ count }}</div></div>{% endfor %}
+</div>
+
+<h2>Параметры</h2>
+{% for row in rows %}
+<div class="card" id="{{ row.key }}">
+  <b>{{ row.key }}</b> — {{ row.title }}<br>
+  <span class="small muted">{{ row.help }}{% if row.bounds %} · границы {{ row.bounds[0] }}…{{ row.bounds[1] }}{% endif %}{% if not row.stored %} · значение по умолчанию{% endif %}</span>
+  <form method="post" action="/settings/{{ row.key }}" class="inline">
+    {{ csrf_field() }}
+    {% if row.kind in ("int", "float") %}
+      <input type="number" name="value" value="{{ row.value }}" min="{{ row.bounds[0] }}" max="{{ row.bounds[1] }}" step="{{ 1 if row.kind == 'int' else 'any' }}" style="width:120px">
+    {% else %}
+      <input name="value" value="{{ row.value }}" style="min-width:320px">
+    {% endif %}
+    <button type="submit">Сохранить</button>
+  </form>
+</div>
+{% endfor %}
+
+{% if history %}
+<details><summary>История правок</summary>
+  {% for c in history %}<div class="small">{{ c.changed_at }} {{ c.key }}: {{ c.old_value }} → {{ c.new_value }} ({{ c.author }})</div>{% endfor %}
+</details>
+{% endif %}
+{% endblock %}

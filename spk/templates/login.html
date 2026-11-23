@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card" style="max-width:420px;margin:60px auto">
+  <h1>📊 {{ title }}</h1>
+  <p class="muted">Вход по рабочей почте организации.</p>
+  {% if yandex %}
+    <p><a href="/login/yandex"><button type="button">Войти через Яндекс</button></a></p>
+  {% else %}
+    <div class="msg warn">Вход через Яндекс не настроен (YANDEX_CLIENT_ID / YANDEX_CLIENT_SECRET).</div>
+  {% endif %}
+  <p class="small"><a href="/login/admin">Вход администратора</a></p>
+</div>
+{% endblock %}

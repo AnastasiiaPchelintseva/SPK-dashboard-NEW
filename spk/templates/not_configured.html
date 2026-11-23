@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card" style="max-width:560px;margin:60px auto">
+  <h1>Не настроено</h1>
+  <p>Приложение запущено, но не может подключиться к базе данных: <b>{{ reason or "база недоступна" }}</b>.</p>
+  {% if missing %}<p>Не заданы переменные окружения: {% for name in missing %}<code>{{ name }}</code>{{ ", " if not loop.last }}{% endfor %}.</p>{% endif %}
+  <p class="muted small">Параметры подключения — <code>DB_HOST</code>, <code>DB_PORT</code>, <code>DB_NAME</code>, <code>DB_USER</code>,
+  <code>DB_PASSWORD</code> в <code>.env</code> (на сервере — <code>.secrets/SPK-dashboard.env</code>). Приложение повторяет
+  подключение каждые {{ retry_s }} секунд и начнёт работать само, без перезапуска; вход в этом режиме недоступен.</p>
+</div>
+{% endblock %}

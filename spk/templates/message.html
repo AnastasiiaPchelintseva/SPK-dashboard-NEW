@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card" style="max-width:520px;margin:60px auto">
+  <h1>{{ title }}</h1>
+  <p>{{ text }}</p>
+  <p class="small">{% if sess %}<a href="/">На главную</a>{% else %}<a href="/login">Ко входу</a>{% endif %}</p>
+</div>
+{% endblock %}

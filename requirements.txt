@@ -1,0 +1,17 @@
+# --- Ядро ---
+# (стандартная библиотека: json, hashlib, secrets)
+
+# --- База (PLATFORM.md: PostgreSQL, SQLAlchemy + Alembic) ---
+sqlalchemy>=2.0        # движок и пул соединений (SQL в проекте — руками, spk/database.py)
+alembic>=1.13          # схема (spk/alembic)
+psycopg[binary]>=3.2   # драйвер PostgreSQL
+
+# --- Веб (PLATFORM.md: FastAPI + Jinja2, вход через Яндекс) ---
+fastapi>=0.115
+uvicorn[standard]>=0.30
+jinja2>=3.1
+python-multipart>=0.0.9  # формы
+itsdangerous>=2.2      # подпись cookie состояния OAuth
+authlib>=1.3           # вход через Яндекс (OAuth 2.0 + PKCE)
+httpx>=0.27            # HTTP-клиент для Authlib (starlette_client)
+argon2-cffi>=23.1      # хэш пароля admin
