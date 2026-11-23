@@ -427,12 +427,13 @@ function ldShift(rows){
   var cE=-1,cN=-1,cM=-1;rows[hi].forEach(function(v,j){v=String(v||"").trim();if(v=="Выпущено")cE=j;else if(v=="Выпущено, нч")cN=j;else if(/^Выпущено кв/.test(v))cM=j});if(cE<0||cM<0)return null;
   var t0="";rows.slice(0,hi).forEach(function(r){(r||[]).forEach(function(v){v=String(v||"");if(/Начало периода/.test(v))t0=v})});
   var m=/(\d\d)\.(\d\d)\.(\d{4})\s+(\d+):/.exec(t0);if(!m)return null;var sh=+m[4]==8?"д":+m[4]==20?"н":null;if(!sh)return null;
-  var S0={alu:{},pvh:{},ms:{}},unit=null,sec=null,cech=null,br={alu:{},pvh:{}},bq={alu:{},pvh:{}},rs={alu:{},pvh:{}},rd={"Д":[0,0],"О":[0,0]};
+  var S0={alu:{},pvh:{},ms:{}},unit=null,sec=null,cech=null,br={alu:{},pvh:{}},bq={alu:{},pvh:{}},rs={alu:{},pvh:{}},rd={"Д":[0,0],"О":[0,0]},msq=0;
   rows.slice(hi+1).forEach(function(r){r=r||[];var a=r[0];if(a==null)return;a=String(a).trim();if(a=="Итого")return;
     var e=num(r[cE]),n=cN>=0?num(r[cN]):0,mm=num(r[cM]);
     if(/^Участок/.test(a)){unit=/МС/.test(a)?"ms":/ПВХ/.test(a)?"pvh":/Ал/.test(a)?"alu":"x";sec=null;cech=null;return}
     if(!unit||unit=="x")return;
     if(a=="Основное производство"||a=="Ремонты"||a=="Не привязано"){sec=a;cech=null;if(a=="Основное производство")S0[unit].main={e:e,n:n,m:mm};if(a=="Ремонты")S0[unit].rem={e:e,n:n,m:mm};return}
+    if(unit=="ms"&&sec=="Основное производство"&&LDD.test(a)){msq+=e;return}
     if(!sec||unit=="ms")return;
     if(sec=="Ремонты"&&unit=="alu"&&!LDC.test(a)&&!LDD.test(a)&&!/^Производство/.test(a)&&!/^Створ/i.test(a)&&/Двер|Окн/i.test(a)){var dk=/Двер/i.test(a)?"Д":"О";rd[dk][0]+=e;rd[dk][1]+=mm;return}
     if(LDC.test(a)){cech=a;return}
@@ -443,7 +444,7 @@ function ldShift(rows){
   var g=function(u,k){return S0[u]&&S0[u][k]?S0[u][k]:{e:0,n:0,m:0}};
   var res={kind:"shift",d:m[1]+"."+m[2]+"."+m[3],sh:sh,
     alu:{o:ldR3(g("alu","main").m),r:ldR3(g("alu","rem").n),l:lines("alu"),sum:ldR3(Object.keys(br.alu).reduce(function(a,k){return a+br.alu[k]},0))},
-    pvh:{o:ldR3(g("pvh","main").m),r:ldR3(g("pvh","rem").n),l:lines("pvh"),sum:ldR3(Object.keys(br.pvh).reduce(function(a,k){return a+br.pvh[k]},0))},mq:Math.round(g("ms","main").e)};
+    pvh:{o:ldR3(g("pvh","main").m),r:ldR3(g("pvh","rem").n),l:lines("pvh"),sum:ldR3(Object.keys(br.pvh).reduce(function(a,k){return a+br.pvh[k]},0))},mq:Math.round(msq>0?msq:g("ms","main").e)};
   return res}
 function ldSsz(rows){
   var hi=-1;for(var i=0;i<rows.length&&hi<0;i++)if(String((rows[i]||[])[0]||"").trim()=="Дата потребности")hi=i;if(hi<0)return null;
@@ -656,7 +657,8 @@ function exXlsx(){if(view=="shop")return exShopXlsx();exBusy(1);exSt("Готов
 function exColor(v){var m=/^color\(srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*([\d.]+%?))?\)$/.exec(String(v).trim());if(!m)return null;
   var a=m[4]===undefined?1:(/%$/.test(m[4])?parseFloat(m[4])/100:parseFloat(m[4])),r=function(x){return Math.round(Math.max(0,Math.min(1,parseFloat(x)))*255)};return "rgba("+r(m[1])+","+r(m[2])+","+r(m[3])+","+a+")"}
 function exFix(doc){var P=["backgroundColor","color","borderTopColor","borderRightColor","borderBottomColor","borderLeftColor","outlineColor","fill","stroke"],K={backgroundColor:"background-color",color:"color",borderTopColor:"border-top-color",borderRightColor:"border-right-color",borderBottomColor:"border-bottom-color",borderLeftColor:"border-left-color",outlineColor:"outline-color",fill:"fill",stroke:"stroke"},w=doc.defaultView;
-  Array.prototype.forEach.call(doc.querySelectorAll("*"),function(el){var cs=w.getComputedStyle(el);P.forEach(function(p){var v=cs[p];if(v&&v.indexOf("color(")===0){var n=exColor(v);el.style.setProperty(K[p],n||"transparent","important")}})})}
+  Array.prototype.forEach.call(doc.querySelectorAll("*"),function(el){var cs=w.getComputedStyle(el);P.forEach(function(p){var v=cs[p];if(v&&v.indexOf("color(")===0){var n=exColor(v);el.style.setProperty(K[p],n||"transparent","important")}});
+    [["boxShadow","box-shadow"],["textShadow","text-shadow"],["textDecorationColor","text-decoration-color"],["columnRuleColor","column-rule-color"]].forEach(function(q){var v=cs[q[0]];if(v&&v.indexOf("color(")>=0){el.style.setProperty(q[1],v.replace(/color\([^)]*\)/g,function(s){return exColor(s)||"transparent"}),"important")}})})}
 function exBlocks(root){var out=[],rt=root.getBoundingClientRect(),W=rt.width,k=(595.28-40)/W,maxH=(841.89-40)/k;
   var skip=function(c){return c.hasAttribute("data-nox")||c.classList.contains("per")||c.classList.contains("seg")||(c.tagName=="DETAILS"&&c.classList.contains("std"))||c.tagName=="SCRIPT"||c.tagName=="STYLE"};
   (function walk(el){Array.prototype.forEach.call(el.children,function(c){if(skip(c))return;var r=c.getBoundingClientRect();if(r.height<4||r.width<4)return;
