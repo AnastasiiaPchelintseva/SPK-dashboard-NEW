@@ -140,7 +140,9 @@ class Readiness:
     def __init__(self):
         self.ready = False
         self.reason = ""
-        # Временный ключ cookie состояния OAuth; после подключения — ключ из базы.
+        # Ключ подписи cookie состояния OAuth. До подключения базы — временный, после — из базы.
+        # Временный ключ НЕ выбрасывается: пока база не подключилась, cookie, выданные с ним,
+        # должны оставаться валидными, иначе форма входа отклоняется как «устаревшая».
         self.state_key = secrets.token_urlsafe(48)
         self._lock = threading.Lock()
 
@@ -149,11 +151,13 @@ class Readiness:
             if self.ready:
                 return True
             try:
-                self.state_key = _startup()
+                key = _startup()
             except DatabaseUnavailable as exc:
                 self.reason = str(exc)
                 log.warning("база недоступна: %s; повтор через %s с", exc, self.RETRY_S)
                 return False
+            # Ключ из базы стабилен между перезапусками: cookie состояния переживают выкладку.
+            self.state_key = key
             self.ready, self.reason = True, ""
             log.info("база подключена, миграции применены")
             return True
@@ -167,7 +171,11 @@ class Readiness:
 
 
 class _StateCookieMiddleware(SessionMiddleware):
-    """SessionMiddleware, чей ключ подписи берётся из базы, когда она подключится."""
+    """SessionMiddleware, чей ключ подписи берётся из базы, когда она подключится.
+
+    Ключ меняется только один раз — с временного на ключ из базы. Дальше он постоянный,
+    поэтому cookie состояния (в них csrf-токен формы входа) не «протухают» при перезапуске.
+    """
 
     def __init__(self, app, *, readiness: Readiness, **kwargs):
         super().__init__(app, secret_key=readiness.state_key, **kwargs)
